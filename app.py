@@ -2,7 +2,7 @@
 import os
 
 import requests
-from flask import Flask, render_template, session, redirect, request, url_for
+from flask import Flask, render_template, session, redirect, request, url_for, flash
 import csv
 import random
 # Allows you to sort a list of lists by the inner list
@@ -15,7 +15,7 @@ app = Flask(__name__)
 # This API key is totally encrypted by separating it onto two lines
 OPENAI_API_KEY = 'jk-vWksWz1HhaqkBL105FIqT' + '3BlbkFJYGn5lNEfCWijvPVvY4Vk'
 OPENAI_API_KEY = OPENAI_API_KEY.replace('j', 's', 1)
-print(OPENAI_API_KEY)
+# print(OPENAI_API_KEY)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
@@ -100,7 +100,17 @@ def show_pair_of_items():
 def item_one_wins():
     item1 = session['item1']
     item2 = session['item2']
+    win_or_lose = ''
+    if item1[3] > item2[3]:
+        win_or_lose = 'You Win!'
+    if item1[3] < item2[3]:
+        win_or_lose = 'You Lose :('
+    if item1[3] == item2[3]:
+        win_or_lose = 'You Win! (Equal value)'
+
+    # Update the elos
     item1elo, item2elo = update_elo(item1[3], item2[3])
+
     for item in items:
         if item == item1:
             item[3] = item1elo
@@ -109,12 +119,23 @@ def item_one_wins():
             item[3] = item2elo
     for item in sorted(items, key=itemgetter(3)):
         print(item)
-    return redirect("/")
+
+    flash(win_or_lose)
+    return render_template('1.html')
 
 @app.route('/2')
 def item_two_wins():
     item1 = session['item1']
     item2 = session['item2']
+
+    win_or_lose = ''
+    if item2[3] > item1[3]:
+        win_or_lose = 'You Win!'
+    if item2[3] < item1[3]:
+        win_or_lose = 'You Lose :('
+    if item2[3] == item1[3]:
+        win_or_lose = 'You Win! (Equal value)'
+
     item1elo, item2elo = update_elo(item2[3], item1[3])
     for item in items:
         if item == item1:
@@ -124,7 +145,8 @@ def item_two_wins():
             item[3] = item2elo
     for item in sorted(items[1:], key=itemgetter(3)):
         print(item)
-    return redirect("/")
+    flash(win_or_lose)
+    return render_template('2.html')
 
 
 def password_prompt(message):
