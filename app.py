@@ -12,12 +12,13 @@ import time
 
 # Flask syntax
 app = Flask(__name__)
-OPENAI_API_KEY = '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'
+OPENAI_API_KEY = input('Enter API Key')
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 app.secret_key = "12345"
 PASSPHRASE = "talha"
+
 
 def update_elo(a, b):
     # We will assume the first parameter a is the item that wins
@@ -47,6 +48,9 @@ with open('ebay_active_items.csv', newline='') as csvfile:
 
         # Generate AI images for each item
         prompt1 = name
+        # Ignore the first line of the CSV file
+        if prompt1 == 'name':
+            continue
         directory = 'static'
         image_exists = False
         for filename in os.listdir(directory):
@@ -55,18 +59,18 @@ with open('ebay_active_items.csv', newline='') as csvfile:
                     if prompt1 in f.name:
                         image_exists = True
         if not image_exists:
-
+            print(prompt1)
             response1 = client.images.generate(
-                model="dall-e-2",
+                model="dall-e-3",
                 prompt=prompt1,
-                size="256x256",
+                size="1024x1024",
                 quality="standard",
                 n=1,
             )
             image_url1 = response1.data[0].url
             print(image_url1)
             img_data = requests.get(image_url1).content
-            with open('images/' + name + '.jpg', 'wb') as handler:
+            with open('static/' + name + '.jpg', 'wb') as handler:
                 handler.write(img_data)
             time.sleep(12)
         items.append(name_price_link_elo_image)
