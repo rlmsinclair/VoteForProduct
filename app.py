@@ -2,6 +2,8 @@
 from flask import Flask, render_template, session, redirect
 import csv
 import random
+# Allows you to sort a list of lists by the inner list
+from operator import itemgetter
 
 # Flask syntax
 app = Flask(__name__)
@@ -60,8 +62,8 @@ def item_one_wins():
     for item in items:
         if item == item2:
             item[3] = item2elo
-    for item in items:
-        print(item[3])
+    for item in sorted(items, key=itemgetter(3)):
+        print(item)
     return redirect("/")
 
 @app.route('/2')
@@ -75,10 +77,9 @@ def item_two_wins():
     for item in items:
         if item == item2:
             item[3] = item2elo
-    for item in items:
-        print(item[3])
+    for item in sorted(items, key=itemgetter(3)):
+        print(item)
     return redirect("/")
-
 
 if __name__ == '__main__':
     app.config['SESSION_TYPE'] = 'filesystem'
