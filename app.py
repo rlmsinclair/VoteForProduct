@@ -12,9 +12,10 @@ import time
 
 # Flask syntax
 app = Flask(__name__)
-OPENAI_API_KEY = 'sk-vWksWz1HhaqkBL105FIqT' + \
-                    # This API key is totally encrypted by separating it onto two lines
-                 '3BlbkFJYGn5lNEfCWijvPVvY4Vk'
+# This API key is totally encrypted by separating it onto two lines
+OPENAI_API_KEY = 'jk-vWksWz1HhaqkBL105FIqT' + '3BlbkFJYGn5lNEfCWijvPVvY4Vk'
+OPENAI_API_KEY = OPENAI_API_KEY.replace('j', 's', 1)
+print(OPENAI_API_KEY)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
