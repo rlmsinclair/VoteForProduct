@@ -1,5 +1,5 @@
 # Flask is a library that allows you to create websites in Python
-from flask import Flask, render_template, session, redirect
+from flask import Flask, render_template, session, redirect, request
 import csv
 import random
 # Allows you to sort a list of lists by the inner list
@@ -9,6 +9,8 @@ from operator import itemgetter
 app = Flask(__name__)
 
 app.secret_key = "12345"
+PASSPHRASE = "talha"
+
 def update_elo(a, b):
     # We will assume the first parameter a is the item that wins
     # Suppose Player 1 wins: rating1 = rating1 + k*(actual – expected)
@@ -77,9 +79,33 @@ def item_two_wins():
     for item in items:
         if item == item2:
             item[3] = item2elo
-    for item in sorted(items, key=itemgetter(3)):
+    for item in sorted(items[1:], key=itemgetter(3)):
         print(item)
     return redirect("/")
+
+
+def password_prompt(message):
+    return f'''
+                <form action="/admin" method='post'>
+                  <label for="password">{message}:</label><br>
+                  <input type="password" id="password" name="password" value=""><br>
+                  <input type="submit" value="Submit">
+                </form>'''
+
+
+@app.route('/admin', methods=['GET', 'POST'])
+def admin():
+    print(request.method)
+    if request.method == 'GET':
+        return password_prompt("Admin password:")
+    elif request.method == 'POST':
+        if request.form['password'] != PASSPHRASE:
+            return password_prompt("Invalid password, try again. Admin password:")
+        else:
+            list_of_products_string = ''
+            for item in sorted(items[1:], key=itemgetter(3)):
+                list_of_products_string = list_of_products_string + item[0] + '<br>' + str(item[1]) + '<br>' + item[2] + '<br>' + str(item[3]) + '<br>' + '----------' + '<br>'
+            return list_of_products_string
 
 if __name__ == '__main__':
     app.config['SESSION_TYPE'] = 'filesystem'
