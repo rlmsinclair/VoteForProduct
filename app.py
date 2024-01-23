@@ -6,7 +6,7 @@ import random
 # Flask syntax
 app = Flask(__name__)
 
-
+app.secret_key = "12345"
 def update_elo(a, b):
     # We will assume the first parameter a is the item that wins
     # Suppose Player 1 wins: rating1 = rating1 + k*(actual – expected)
@@ -81,6 +81,5 @@ def item_two_wins():
 
 
 if __name__ == '__main__':
-    app.secret_key = "12345"
     app.config['SESSION_TYPE'] = 'filesystem'
     app.run()
