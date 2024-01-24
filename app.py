@@ -16,12 +16,12 @@ import time
 from flask_sqlalchemy import SQLAlchemy
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
 from flask_login import UserMixin, LoginManager, login_user
-
+import psycopg2
 # Flask syntax
 
 app = Flask(__name__)
 # this is the databse url when you run the app next time i will create a db in this folder
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://users:AVNS_ETO2UC18gXQE8pi6gFv@app-784b9fa7-3b44-405e-9170-d80f0dd5e72d-do-user-14798294-0.c.db.ondigitalocean.com:25060/users?sslmode=require'
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
