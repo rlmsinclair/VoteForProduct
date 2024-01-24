@@ -15,8 +15,8 @@ from wtforms import StringField , PasswordField , SubmitField
 import time
 from flask_sqlalchemy import SQLAlchemy
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
-from flask_login import UserMixin , LoginManager , login_user , login_required , logout_user , current_user
-import re
+from flask_login import UserMixin, LoginManager, login_user
+
 # Flask syntax
 
 app = Flask(__name__)
