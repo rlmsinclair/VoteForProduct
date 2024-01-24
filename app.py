@@ -1,6 +1,7 @@
 # Flask is a library that allows you to create websites in Python
 import os
 
+import flask_login
 import requests
 from flask import Flask, render_template, session, redirect, request, url_for, flash
 import csv
@@ -8,10 +9,25 @@ import random
 # Allows you to sort a list of lists by the inner list
 from operator import itemgetter
 from openai import OpenAI
-import time
 
+from flask_wtf import FlaskForm
+from wtforms import StringField , PasswordField , SubmitField
+import time
+from flask_sqlalchemy import SQLAlchemy
+from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
+from flask_login import UserMixin , LoginManager , login_user , login_required , logout_user , current_user
+import re
 # Flask syntax
+
 app = Flask(__name__)
+# this is the databse url when you run the app next time i will create a db in this folder
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+db = SQLAlchemy(app)
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
+
+
 # This API key is totally encrypted by separating it onto two lines
 OPENAI_API_KEY = 'jk-vWksWz1HhaqkBL105FIqT' + '3BlbkFJYGn5lNEfCWijvPVvY4Vk'
 OPENAI_API_KEY = OPENAI_API_KEY.replace('j', 's', 1)
@@ -19,8 +35,64 @@ OPENAI_API_KEY = OPENAI_API_KEY.replace('j', 's', 1)
 client = OpenAI(api_key=OPENAI_API_KEY)
 
 
-app.secret_key = "12345"
+app.config['SECRET_KEY'] = '1234'
 PASSPHRASE = "talha"
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    with app.app_context():
+        return User.query.get(int(user_id))
+
+
+
+class User(UserMixin , db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email=db.Column(db.String(50), unique=True, nullable=False)
+    username = db.Column(db.String(50), unique=True , nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    wins = db.Column(db.Integer(), nullable=True)
+    losses = db.Column(db.Integer(), nullable=True)
+    draws = db.Column(db.Integer(), nullable=True)
+
+
+#Registration Form
+class RegistrationForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Length(min=5, max=50)])
+    username = StringField('Username', validators=[DataRequired(), Length(min=5, max=50)])
+    password = PasswordField('Password' , validators=[DataRequired() , Length(min=8 ,max=50)])
+    confirm_password = PasswordField ('Confirm Password' , validators=[DataRequired() , EqualTo('password')])
+    submit = SubmitField('Register')
+
+    def validate_username(self , field): 
+        if User.query.filter_by(username=field.data).first():
+            raise ValidationError('Error username taken.')
+
+
+@app.route('/register' , methods=['GET' , 'POST'])
+def register(): 
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        new_user = User(email=form.email.data, username=form.username.data, password= form.password.data, wins=0, losses=0, draws=0)
+        db.session.add(new_user)
+        db.session.commit()
+        flash ('Registration Successful !')
+        return redirect(url_for('login'))
+    return render_template('register.html' , form=form)
+
+@app.route('/login', methods=['GET' , 'POST'])
+def login(): 
+    if request.method == 'POST' :
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by (username=username).first()
+        if user and user.password == password :
+            login_user(user)
+            flash('Login Successful !' , 'success')
+            return redirect (url_for('show_pair_of_items'))
+        else : 
+            flash('login failed , check your username and password' , 'danger')
+    return render_template('login.html')
 
 
 def update_elo(a, b):
@@ -85,6 +157,9 @@ def show_pair_of_items():
     random_value_2 = random.randint(1, len(items)-1)
     session['item1'] = items[random_value_1]
     session['item2'] = items[random_value_2]
+    user = User.query.filter_by(username='test1').first()
+    user = User
+    print(user.email)
 
     return render_template('index.html',
                            contestant1=str(items[random_value_1][0]),
@@ -101,14 +176,26 @@ def item_one_wins():
     item1 = session['item1']
     item2 = session['item2']
     win_or_lose = ''
+    user = flask_login.current_user
     if item1[3] > item2[3]:
         win_or_lose = 'You Win!'
+        user.wins = user.wins + 1
+        db.session.add(user)
+        db.session.commit()
     if item1[3] < item2[3]:
         win_or_lose = 'You Lose :('
+        user.losses = user.losses + 1
+        db.session.add(user)
+        db.session.commit()
     if item1[3] == item2[3]:
-        win_or_lose = 'You Win! (Equal value)'
+        win_or_lose = 'You Draw! (Equal value)'
+        user.draws = user.draws + 1
+        db.session.add(user)
+        db.session.commit()
 
-    # Update the elos
+    user.wins = user.wins + 1
+    db.session.add(user)
+    db.session.commit()
     item1elo, item2elo = update_elo(item1[3], item2[3])
 
     for item in items:
@@ -129,12 +216,22 @@ def item_two_wins():
     item2 = session['item2']
 
     win_or_lose = ''
+    user = flask_login.current_user
     if item2[3] > item1[3]:
         win_or_lose = 'You Win!'
+        user.wins = user.wins + 1
+        db.session.add(user)
+        db.session.commit()
     if item2[3] < item1[3]:
         win_or_lose = 'You Lose :('
+        user.losses = user.losses + 1
+        db.session.add(user)
+        db.session.commit()
     if item2[3] == item1[3]:
-        win_or_lose = 'You Win! (Equal value)'
+        win_or_lose = 'You Draw! (Equal value)'
+        user.draws = user.draws + 1
+        db.session.add(user)
+        db.session.commit()
 
     item1elo, item2elo = update_elo(item2[3], item1[3])
     for item in items:
@@ -171,7 +268,9 @@ def admin():
             for item in sorted(items[1:], key=itemgetter(3)):
                 list_of_products_string = list_of_products_string + item[0] + '<br>' + str(item[1]) + '<br>' + item[2] + '<br>' + str(item[3]) + '<br>' + '----------' + '<br>'
             return list_of_products_string
-
+with app.app_context():
+    db.create_all()
 if __name__ == '__main__':
+    
     app.config['SESSION_TYPE'] = 'filesystem'
-    app.run()
+    app.run(debug=True)
