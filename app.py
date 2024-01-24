@@ -21,7 +21,7 @@ import psycopg2
 
 app = Flask(__name__)
 # this is the databse url when you run the app next time i will create a db in this folder
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://users:AVNS_ETO2UC18gXQE8pi6gFv@app-784b9fa7-3b44-405e-9170-d80f0dd5e72d-do-user-14798294-0.c.db.ondigitalocean.com:25060/users?sslmode=require'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://doadmin:show-password@app-784b9fa7-3b44-405e-9170-d80f0dd5e72d-do-user-14798294-0.c.db.ondigitalocean.com:25060/defaultdb?sslmode=require'
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
