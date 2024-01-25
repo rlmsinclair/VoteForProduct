@@ -256,9 +256,9 @@ def show_leaderboard():
         for user in User.query.order_by(User.wins).all():
             usernames.append([user.username, user.wins])
         usernames.reverse()
-        output = ''
+        output = 'Wins | Username<br>'
         for username in usernames:
-            output = output + str(username[1]) + ' : ' + username[0] + '<br>'
+            output = output + str(username[1]) + '     | ' + username[0] + '<br>'
         return output
 
 def password_prompt(message):
