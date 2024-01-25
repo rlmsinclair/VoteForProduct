@@ -55,6 +55,7 @@ class User(UserMixin , db.Model):
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String(50), unique=True, nullable=False)
     email=db.Column(db.String(50), unique=True, nullable=False)
+    wallet_address = db.Column(db.String(100), unique=True, nullable=False)
     username = db.Column(db.String(50), unique=True , nullable=False)
     password = db.Column(db.String(100), nullable=False)
     wins = db.Column(db.Integer(), nullable=True)
@@ -66,6 +67,7 @@ class User(UserMixin , db.Model):
 class RegistrationForm(FlaskForm):
     country = StringField('Country', validators=[DataRequired(), Length(min=5, max=50)])
     email = StringField('Email', validators=[DataRequired(), Length(min=5, max=50)])
+    wallet_address = StringField('Bitcoin Wallet Address', validators=[DataRequired(), Length(min=5, max=50)])
     username = StringField('Username', validators=[DataRequired(), Length(min=5, max=50)])
     password = PasswordField('Password' , validators=[DataRequired() , Length(min=8 ,max=50)])
     confirm_password = PasswordField ('Confirm Password' , validators=[DataRequired() , EqualTo('password')])
@@ -80,7 +82,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        new_user = User(country=request.form.get('country'), email=form.email.data, username=form.username.data, password= hashed_password, wins=0, losses=1, draws=0)
+        new_user = User(country=request.form.get('country'), email=form.email.data, wallet_address=form.wallet_address.data, username=form.username.data, password= hashed_password, wins=0, losses=1, draws=0)
         db.session.add(new_user)
         db.session.commit()
         flash ('Registration Successful !')
