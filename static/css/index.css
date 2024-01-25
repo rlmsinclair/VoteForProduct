@@ -3,7 +3,11 @@
 }
 .imgContainer1{
     float:left;
+    width: 250px;
+    word-wrap: break-word;
 }
 .imgContainer2{
     float:right;
+    width: 250px;
+    word-wrap: break-word;
 }
