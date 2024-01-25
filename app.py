@@ -80,7 +80,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        new_user = User(country=request.form.get('country'), email=form.email.data, username=form.username.data, password= hashed_password, wins=0, losses=0, draws=0)
+        new_user = User(country=request.form.get('country'), email=form.email.data, username=form.username.data, password= hashed_password, wins=0, losses=1, draws=0)
         db.session.add(new_user)
         db.session.commit()
         flash ('Registration Successful !')
@@ -261,12 +261,12 @@ def item_two_wins():
 def show_leaderboard():
     with app.app_context():
         usernames = []
-        for user in User.query.order_by(User.wins).all():
-            usernames.append([user.username, user.wins])
-        usernames.reverse()
-        output = 'Wins | Username<br>'
+        for user in User.query.order_by(User.wins / User.losses).all():
+            usernames.append([user.username, user.wins / user.losses, user.wins, user.losses, user.draws])
+        output = 'Wins/Losses | Wins | Losses | Draws | Username<br>'
         for username in usernames:
-            output = output + str(username[1]) + '     | ' + username[0] + '<br>'
+            output = output + str(username[1]) + ' | ' + str(username[2]) + ' | ' + str(username[3]) + ' | '\
+                     + str(username[4]) + ' | ' + username[0] + '<br>'
         return output
 
 def password_prompt(message):
@@ -291,6 +291,8 @@ def admin():
             for item in sorted(items[1:], key=itemgetter(3)):
                 list_of_products_string = list_of_products_string + item[0] + '<br>' + str(item[1]) + '<br>' + item[2] + '<br>' + str(item[3]) + '<br>' + '----------' + '<br>'
             return list_of_products_string
+
+
 with app.app_context():
     db.create_all()
 if __name__ == '__main__':
