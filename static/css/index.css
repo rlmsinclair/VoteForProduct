@@ -1,13 +1,16 @@
 .textContainer1{
     text-align:center;
+    font-size: 20px;
 }
 .imgContainer1{
     float:left;
     width: 250px;
     word-wrap: break-word;
+    font-size: 18px;
 }
 .imgContainer2{
     float:right;
     width: 250px;
     word-wrap: break-word;
+    font-size: 18px;
 }
