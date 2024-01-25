@@ -1,17 +1,28 @@
-<h1>Better value for money? Click to Choose.</h1>
-<h2>Try and guess the item that most people have picked!</h2>
-<a href = "/1">{{contestant1}}</a>
-<br>
-<p>{{price1}}</p>
-<br>
-<img src="{{ image_url1 }}" alt="Generated Image" />
-<br>
-<br>
-<a href="/2">{{contestant2}}</a>
-<br>
-<p>{{price2}}</p>
-<br>
-<img src="{{ image_url2 }}" alt="Generated Image" />
-<br>
-<br>
-<a href="admin">admin</a>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
+
+<div class="textContainer1">
+    <h1>Better value for money? Click to Choose.</h1>
+    <h2>Try and guess the item that most people have picked!</h2>
+    <a href = "/leaderboard">Leaderboard</a>
+</div>
+
+<div class="image123">
+    <div class="imgContainer1">
+        <a href = "/1">{{contestant1}}</a>
+        <p>{{price1}}</p>
+        <a href="/1">
+            <img src="{{ image_url1 }}" height="200" width="200"/>
+        </a>
+        <p>This is image 1</p>
+    </div>
+    <div class="imgContainer2">
+        <a href="/2">{{contestant2}}</a>
+        <p>{{price2}}</p>
+        <a href="/2">
+            <img src="{{ image_url2 }}" height="200" width="200"/>
+        </a>
+        <p>This is image 2</p>
+    </div>
+    </div>
+</div>
+
