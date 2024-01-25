@@ -165,14 +165,19 @@ def show_pair_of_items():
     random_value_2 = random.randint(1, len(items)-1)
     session['item1'] = items[random_value_1]
     session['item2'] = items[random_value_2]
-
+    price1 = items[random_value_1][1]
+    price2 = items[random_value_2][1]
+    if len(price1) >= 14:
+        price1 = price1.split('.')[0] + '.' + price1.split('.')[1][0] + price1.split('.')[1][1]
+    if len(price2) >= 14:
+        price2 = price2.split('.')[0] + '.' + price2.split('.')[1][0] + price2.split('.')[1][1]
     return render_template('index.html',
                            contestant1=str(items[random_value_1][0]),
                            image_url1=url_for('static', filename=items[random_value_1][0] + '.jpg'),
                            contestant2=str(items[random_value_2][0]),
                            image_url2=url_for('static', filename=items[random_value_2][0] + '.jpg'),
-                           price1='£' + str(items[random_value_1][1]),
-                           price2='£' + str(items[random_value_2][1])
+                           price1='£' + price1,
+                           price2='£' + price2
                            )
 
 
