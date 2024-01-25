@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/1.css') }}">
 <head>
-    {% with messages = get_flashed_messages(with_categories=True) %}
-    {% for category, message in messages %}
-        <div class="flash {{category}}">{{message}}</div>
-    {% endfor %}
-    {% endwith%}
-    <a href="/">Choose more items!</a>
+    <div class="textContainer1">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% for category, message in messages %}
+            <div class="flash {{category}}">{{message}}</div>
+        {% endfor %}
+        {% endwith%}
+        <a href="/">Choose more items!</a>
+    </div>
 </head>
