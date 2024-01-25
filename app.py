@@ -159,9 +159,6 @@ def show_pair_of_items():
     random_value_2 = random.randint(1, len(items)-1)
     session['item1'] = items[random_value_1]
     session['item2'] = items[random_value_2]
-    user = User.query.filter_by(username='test1').first()
-    user = User
-    print(user.email)
 
     return render_template('index.html',
                            contestant1=str(items[random_value_1][0]),
@@ -195,7 +192,6 @@ def item_one_wins():
         db.session.add(user)
         db.session.commit()
 
-    user.wins = user.wins + 1
     db.session.add(user)
     db.session.commit()
     item1elo, item2elo = update_elo(item1[3], item2[3])
