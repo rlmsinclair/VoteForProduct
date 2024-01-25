@@ -17,6 +17,7 @@ import time
 from flask_sqlalchemy import SQLAlchemy
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
 from flask_login import UserMixin, LoginManager, login_user
+from flask_bcrypt import Bcrypt
 import psycopg2
 # Flask syntax
 
@@ -27,6 +28,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://doadmin:AVNS_JkvcfAiuwN-gs
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
+
+bcrypt = Bcrypt(app)
 
 
 
@@ -76,9 +79,8 @@ class RegistrationForm(FlaskForm):
 def register(): 
     form = RegistrationForm()
     if form.validate_on_submit():
-        print(type(request.form.get('country')))
-        print(type(form.email.data))
-        new_user = User(country=request.form.get('country'), email=form.email.data, username=form.username.data, password= form.password.data, wins=0, losses=0, draws=0)
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        new_user = User(country=request.form.get('country'), email=form.email.data, username=form.username.data, password= hashed_password, wins=0, losses=0, draws=0)
         db.session.add(new_user)
         db.session.commit()
         flash ('Registration Successful !')
@@ -91,9 +93,10 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by (username=username).first()
-        if user and user.password == password :
+        is_valid = bcrypt.check_password_hash(user.password, password)
+        if user and is_valid:
             login_user(user)
-            flash('Login Successful !' , 'success')
+            flash('Login Successful !', 'success')
             return redirect (url_for('show_pair_of_items'))
         else : 
             flash('login failed , check your username and password' , 'danger')
