@@ -50,6 +50,7 @@ def load_user(user_id):
 
 class User(UserMixin , db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    country = db.Column(db.String(50), unique=True, nullable=False)
     email=db.Column(db.String(50), unique=True, nullable=False)
     username = db.Column(db.String(50), unique=True , nullable=False)
     password = db.Column(db.String(100), nullable=False)
@@ -60,6 +61,7 @@ class User(UserMixin , db.Model):
 
 #Registration Form
 class RegistrationForm(FlaskForm):
+    country = StringField('Country', validators=[DataRequired(), Length(min=5, max=50)])
     email = StringField('Email', validators=[DataRequired(), Length(min=5, max=50)])
     username = StringField('Username', validators=[DataRequired(), Length(min=5, max=50)])
     password = PasswordField('Password' , validators=[DataRequired() , Length(min=8 ,max=50)])
@@ -70,12 +72,13 @@ class RegistrationForm(FlaskForm):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError('Error username taken.')
 
-
 @app.route('/register' , methods=['GET' , 'POST'])
 def register(): 
     form = RegistrationForm()
     if form.validate_on_submit():
-        new_user = User(email=form.email.data, username=form.username.data, password= form.password.data, wins=0, losses=0, draws=0)
+        print(type(request.form.get('country')))
+        print(type(form.email.data))
+        new_user = User(country=request.form.get('country'), email=form.email.data, username=form.username.data, password= form.password.data, wins=0, losses=0, draws=0)
         db.session.add(new_user)
         db.session.commit()
         flash ('Registration Successful !')
@@ -246,6 +249,17 @@ def item_two_wins():
     flash(win_or_lose)
     return render_template('2.html')
 
+@app.route('/leaderboard')
+def show_leaderboard():
+    with app.app_context():
+        usernames = []
+        for user in User.query.order_by(User.wins).all():
+            usernames.append([user.username, user.wins])
+        usernames.reverse()
+        output = ''
+        for username in usernames:
+            output = output + str(username[1]) + ' : ' + username[0] + '<br>'
+        return output
 
 def password_prompt(message):
     return f'''
