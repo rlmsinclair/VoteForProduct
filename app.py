@@ -160,7 +160,7 @@ with open('ebay_active_items.csv', newline='') as csvfile:
 def show_pair_of_items():
     user = flask_login.current_user
     if user.is_anonymous:
-        return redirect(url_for('register'))
+        return redirect(url_for('login'))
     random_value_1 = random.randint(1, len(items)-1)
     random_value_2 = random.randint(1, len(items)-1)
     session['item1'] = items[random_value_1]
