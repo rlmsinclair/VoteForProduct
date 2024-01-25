@@ -11,6 +11,7 @@ from operator import itemgetter
 from openai import OpenAI
 
 from flask_wtf import FlaskForm
+from sqlalchemy import create_engine
 from wtforms import StringField , PasswordField , SubmitField
 import time
 from flask_sqlalchemy import SQLAlchemy
@@ -20,8 +21,9 @@ import psycopg2
 # Flask syntax
 
 app = Flask(__name__)
+
 # this is the databse url when you run the app next time i will create a db in this folder
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://doadmin:show-password@app-784b9fa7-3b44-405e-9170-d80f0dd5e72d-do-user-14798294-0.c.db.ondigitalocean.com:25060/defaultdb?sslmode=require'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://doadmin:AVNS_JkvcfAiuwN-gsSf6K0c@app-784b9fa7-3b44-405e-9170-d80f0dd5e72d-do-user-14798294-0.c.db.ondigitalocean.com:25060/users'
 db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
