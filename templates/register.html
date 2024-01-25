@@ -278,6 +278,17 @@
           </ul>
         {% endif %}
         <br>
+        <label for="wallet_address">Bitcoin Wallet Address:</label>
+        {{ form.wallet_address }}
+        {% if form.wallet_address.errors %}
+          <ul class="errors">
+            {% for error in form.wallet_address.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        <br>
+
         <label for="username">Username:</label>
         {{ form.username }}
         {% if form.username.errors %}
