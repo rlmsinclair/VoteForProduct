@@ -55,7 +55,7 @@ class User(UserMixin , db.Model):
     id = db.Column(db.Integer, primary_key=True)
     country = db.Column(db.String(50), unique=True, nullable=False)
     email=db.Column(db.String(50), unique=True, nullable=False)
-    wallet_address = db.Column(db.String(100), unique=True, nullable=False)
+    wallet_address = db.Column(db.String(100), unique=True, nullable=True)
     username = db.Column(db.String(50), unique=True , nullable=False)
     password = db.Column(db.String(100), nullable=False)
     wins = db.Column(db.Integer(), nullable=True)
@@ -67,7 +67,7 @@ class User(UserMixin , db.Model):
 class RegistrationForm(FlaskForm):
     country = StringField('Country', validators=[DataRequired(), Length(min=5, max=50)])
     email = StringField('Email', validators=[DataRequired(), Length(min=5, max=50)])
-    wallet_address = StringField('Bitcoin Wallet Address', validators=[DataRequired(), Length(min=5, max=50)])
+    wallet_address = StringField('Monero Wallet Address', validators=[Length(min=0, max=100)])
     username = StringField('Username', validators=[DataRequired(), Length(min=5, max=50)])
     password = PasswordField('Password' , validators=[DataRequired() , Length(min=8 ,max=50)])
     confirm_password = PasswordField ('Confirm Password' , validators=[DataRequired() , EqualTo('password')])
