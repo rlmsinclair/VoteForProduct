@@ -98,7 +98,6 @@ def login():
         is_valid = bcrypt.check_password_hash(user.password, password)
         if user and is_valid:
             login_user(user)
-            flash('Login Successful !', 'success')
             return redirect (url_for('show_pair_of_items'))
         else : 
             flash('login failed , check your username and password' , 'danger')
@@ -296,6 +295,7 @@ def show_leaderboard():
         usernames = []
         for user in User.query.order_by(User.wins / User.losses).all():
             usernames.append([user.username, user.wins / user.losses, user.wins, user.losses, user.draws])
+        usernames.reverse()
         output = 'Wins/Losses | Wins | Losses | Draws | Username<br>'
         for username in usernames:
             output = output + str(username[1]) + ' | ' + str(username[2]) + ' | ' + str(username[3]) + ' | '\
