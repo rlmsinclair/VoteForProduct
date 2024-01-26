@@ -1,3 +1,9 @@
+.topright{
+    position: absolute;
+    top: 0px;
+    right: 20px;
+    font-size: 20px;
+}
 .textContainer1{
     font-size: 50px;
     margin: 0;
