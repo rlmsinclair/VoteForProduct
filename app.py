@@ -169,35 +169,35 @@ def show_pair_of_items():
     try:
         if session['item1'] != '0' or session['item2'] != '0':
             fun = 'had'
+        else:
+            session['item1'] = '0'
+            session['item2'] = '0'
+        session['current_page'] = 'index'
+        random_value_1 = random.randint(1, len(items) - 1)
+        random_value_2 = random.randint(1, len(items) - 1)
+        if session['item1'] == '0' or session['item2'] == '0':
+            session['item1'] = items[random_value_1]
+            session['item2'] = items[random_value_2]
+        price1 = session['item1'][1]
+        price2 = session['item2'][1]
+        if len(price1) >= 14:
+            price1 = price1.split('.')[0] + '.' + price1.split('.')[1][0] + price1.split('.')[1][1]
+        if len(price2) >= 14:
+            price2 = price2.split('.')[0] + '.' + price2.split('.')[1][0] + price2.split('.')[1][1]
+        return render_template('index.html',
+                               contestant1=str(session['item1'][0]),
+                               image_url1=url_for('static', filename=session['item1'][0] + '.jpg'),
+                               contestant2=str(session['item2'][0]),
+                               image_url2=url_for('static', filename=session['item2'][0] + '.jpg'),
+                               price1='£' + price1,
+                               price2='£' + price2
+                               )
     except:
         session['item1'] = 0
         session['item2'] = 0
         return redirect(url_for('show_pair_of_items'))
-    else:
-        session['item1'] = '0'
-        session['item2'] = '0'
-    session['current_page'] = 'index'
-    random_value_1 = random.randint(1, len(items)-1)
-    random_value_2 = random.randint(1, len(items)-1)
-    if session['item1'] == '0' or session['item2'] == '0':
-        session['item1'] = items[random_value_1]
-        session['item2'] = items[random_value_2]
-    price1 = session['item1'][1]
-    price2 = session['item2'][1]
-    if len(price1) >= 14:
-        price1 = price1.split('.')[0] + '.' + price1.split('.')[1][0] + price1.split('.')[1][1]
-    if len(price2) >= 14:
-        price2 = price2.split('.')[0] + '.' + price2.split('.')[1][0] + price2.split('.')[1][1]
-    return render_template('index.html',
-                           contestant1=str(session['item1'][0]),
-                           image_url1=url_for('static', filename=session['item1'][0] + '.jpg'),
-                           contestant2=str(session['item2'][0]),
-                           image_url2=url_for('static', filename=session['item2'][0] + '.jpg'),
-                           price1='£' + price1,
-                           price2='£' + price2
-                           )
 
-timeout_dict = {}
+
 @app.route('/1')
 def item_one_wins():
     item1 = session['item1']
