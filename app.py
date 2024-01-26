@@ -172,9 +172,6 @@ def show_pair_of_items():
         session['item1'] = '0'
         session['item2'] = '0'
     session['current_page'] = 'index'
-    user = flask_login.current_user
-    if user.is_anonymous:
-        return redirect(url_for('login'))
     random_value_1 = random.randint(1, len(items)-1)
     random_value_2 = random.randint(1, len(items)-1)
     if session['item1'] == '0' or session['item2'] == '0':
