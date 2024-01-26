@@ -193,8 +193,8 @@ def show_pair_of_items():
                                price2='£' + price2
                                )
     except:
-        session['item1'] = 0
-        session['item2'] = 0
+        session['item1'] = '0'
+        session['item2'] = '0'
         return redirect(url_for('show_pair_of_items'))
 
 
