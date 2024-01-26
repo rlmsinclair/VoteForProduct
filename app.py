@@ -166,7 +166,7 @@ def show_pair_of_items():
     user = flask_login.current_user
     if user.is_anonymous:
         return redirect(url_for('login'))
-    if session['item1'] != '0' or session['item2'] != 0:
+    if session['item1'] != '0' or session['item2'] != '0':
         fun = 'had'
     else:
         session['item1'] = '0'
