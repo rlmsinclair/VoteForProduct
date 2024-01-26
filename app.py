@@ -85,13 +85,13 @@ def register():
         new_user = User(country=request.form.get('country'), email=form.email.data, wallet_address=form.wallet_address.data, username=form.username.data, password= hashed_password, wins=0, losses=1, draws=0)
         db.session.add(new_user)
         db.session.commit()
-        flash ('Registration Successful !')
+        flash('Registration Successful !')
         return redirect(url_for('login'))
-    return render_template('register.html' , form=form)
+    return render_template('register.html', form=form)
 
-@app.route('/login', methods=['GET' , 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login(): 
-    if request.method == 'POST' :
+    if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by (username=username).first()
@@ -163,6 +163,7 @@ with open('ebay_active_items.csv', newline='') as csvfile:
 
 @app.route('/')
 def show_pair_of_items():
+    session['current_page'] = 'index'
     user = flask_login.current_user
     if user.is_anonymous:
         return redirect(url_for('login'))
@@ -185,13 +186,19 @@ def show_pair_of_items():
                            price2='£' + price2
                            )
 
-
+timeout_dict = {}
 @app.route('/1')
 def item_one_wins():
     item1 = session['item1']
     item2 = session['item2']
+    item1_item2 = item1[0] + item2[0]
     win_or_lose = ''
     user = flask_login.current_user
+    if session['current_page'] == '1':
+        return redirect(url_for('show_pair_of_items'))
+    session['current_page'] = '1'
+
+
     if item1[3] > item2[3]:
         win_or_lose = 'You Win!'
         user.wins = user.wins + 1
@@ -224,6 +231,7 @@ def item_one_wins():
     flash(win_or_lose)
     return render_template('1.html')
 
+
 @app.route('/2')
 def item_two_wins():
     item1 = session['item1']
@@ -231,6 +239,11 @@ def item_two_wins():
 
     win_or_lose = ''
     user = flask_login.current_user
+
+    if session['current_page'] == '2':
+        return redirect(url_for('show_pair_of_items'))
+    session['current_page'] = '2'
+
     if item2[3] > item1[3]:
         win_or_lose = 'You Win!'
         user.wins = user.wins + 1
