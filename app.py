@@ -173,8 +173,8 @@ def show_pair_of_items():
             session['item1'] = '0'
             session['item2'] = '0'
         session['current_page'] = 'index'
-        random_value_1 = random.randint(1, len(items) - 1)
-        random_value_2 = random.randint(1, len(items) - 1)
+        random_value_1 = random.randint(0, len(items) - 1)
+        random_value_2 = random.randint(0, len(items) - 1)
         if session['item1'] == '0' or session['item2'] == '0':
             session['item1'] = items[random_value_1]
             session['item2'] = items[random_value_2]
@@ -202,7 +202,6 @@ def show_pair_of_items():
 def item_one_wins():
     item1 = session['item1']
     item2 = session['item2']
-    item1_item2 = item1[0] + item2[0]
     win_or_lose = ''
     user = flask_login.current_user
     if session['current_page'] == '1':
@@ -286,7 +285,7 @@ def item_two_wins():
     for item in items:
         if item == item2:
             item[3] = item2elo
-    for item in sorted(items[1:], key=itemgetter(3)):
+    for item in sorted(items, key=itemgetter(3)):
         print(item)
     flash(win_or_lose)
     return render_template('2.html')
@@ -315,6 +314,7 @@ def password_prompt(message):
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     print(request.method)
+    print(len(items))
     if request.method == 'GET':
         return password_prompt("Admin password:")
     elif request.method == 'POST':
@@ -322,7 +322,7 @@ def admin():
             return password_prompt("Invalid password, try again. Admin password:")
         else:
             list_of_products_string = ''
-            for item in sorted(items[1:], key=itemgetter(3)):
+            for item in sorted(items, key=itemgetter(3)):
                 list_of_products_string = list_of_products_string + item[0] + '<br>' + str(item[1]) + '<br>' + item[2] + '<br>' + str(item[3]) + '<br>' + '----------' + '<br>'
             return list_of_products_string
 
