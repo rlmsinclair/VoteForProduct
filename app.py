@@ -163,25 +163,31 @@ with open('ebay_active_items.csv', newline='') as csvfile:
 
 @app.route('/')
 def show_pair_of_items():
+    if session['item1'] != '0' or session['item2'] != 0:
+        fun = 'had'
+    else:
+        session['item1'] = '0'
+        session['item2'] = '0'
     session['current_page'] = 'index'
     user = flask_login.current_user
     if user.is_anonymous:
         return redirect(url_for('login'))
     random_value_1 = random.randint(1, len(items)-1)
     random_value_2 = random.randint(1, len(items)-1)
-    session['item1'] = items[random_value_1]
-    session['item2'] = items[random_value_2]
-    price1 = items[random_value_1][1]
-    price2 = items[random_value_2][1]
+    if session['item1'] == '0' or session['item2'] == '0':
+        session['item1'] = items[random_value_1]
+        session['item2'] = items[random_value_2]
+    price1 = session['item1'][1]
+    price2 = session['item2'][1]
     if len(price1) >= 14:
         price1 = price1.split('.')[0] + '.' + price1.split('.')[1][0] + price1.split('.')[1][1]
     if len(price2) >= 14:
         price2 = price2.split('.')[0] + '.' + price2.split('.')[1][0] + price2.split('.')[1][1]
     return render_template('index.html',
-                           contestant1=str(items[random_value_1][0]),
-                           image_url1=url_for('static', filename=items[random_value_1][0] + '.jpg'),
-                           contestant2=str(items[random_value_2][0]),
-                           image_url2=url_for('static', filename=items[random_value_2][0] + '.jpg'),
+                           contestant1=str(session['item1'][0]),
+                           image_url1=url_for('static', filename=session['item1'][0] + '.jpg'),
+                           contestant2=str(session['item2'][0]),
+                           image_url2=url_for('static', filename=session['item2'][0] + '.jpg'),
                            price1='£' + price1,
                            price2='£' + price2
                            )
@@ -198,6 +204,9 @@ def item_one_wins():
         return redirect(url_for('show_pair_of_items'))
     session['current_page'] = '1'
 
+
+    session['item1'] = '0'
+    session['item2'] = '0'
 
     if item1[3] > item2[3]:
         win_or_lose = 'You Win!'
@@ -243,6 +252,11 @@ def item_two_wins():
     if session['current_page'] == '2':
         return redirect(url_for('show_pair_of_items'))
     session['current_page'] = '2'
+
+
+    session['item1'] = '0'
+    session['item2'] = '0'
+
 
     if item2[3] > item1[3]:
         win_or_lose = 'You Win!'
