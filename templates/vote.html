@@ -1,18 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LLMZH86LY6"></script>
+<html>
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LLMZH86LY6"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
+    
       gtag('config', 'G-LLMZH86LY6');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/nav.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
-<div class="textContainer1">
-  <nav class="navbar">
+</head>
+<body> 
+    <nav class="navbar">
         <ul class="navbar-nav">
             <li class="nav-item"><a href="/">Home</a></li>
             <li class="nav-item"><a href="/vote">Vote</a></li>
@@ -21,24 +24,37 @@
             <li class="nav-item"><a href="/contact">Contact Us</a></li>
             <li class="nav-item"><a href="/login">Login</a></li>
             <li class="nav-item"><a href="/register">Register</a></li>
-
-
+            
+    
         </ul>
-
-
+    
+    
     </nav>
-    <h1>Better value for money? Click to Choose.</h1>
-    <h2>Try and guess the item that most people have picked!</h2>
-    <p>Product List is reset daily at 8pm GMT</p>
-    <p>
-        Current prize is £1.00. Every day at 8pm GMT
-        the Top 10 users on the leaderboard will receive an email and be paid in Monero (XMR).
-        (You must enter a valid Monero wallet address to be paid, or if I know you in person I can pay cash.)
-        Places 1-2 receive 100% of prize. Places 3-5 receive 50% of prize. Places 5-10 receive 20% of prize.
-        It may take up to 24 hours to receive your Monero.
-    </p>
-  <footer class="footer">
+    <br>
+    <br>
+
+<div class="card-container">
+    <div class="card">
+        <div class="card-body">
+            <a href="/1">
+                <img src="{{ image_url1 }}" height="200" width="200" alt="Contestant 1">
+            </a>
+            <p>{{ price1 }}</p>
+            <a href="/1">{{ contestant1 }}</a>
+        </div>
+    </div> 
+    <div class="card">
+        <div class="card-body">
+            <a href="/2">
+                <img src="{{ image_url2 }}" height="200" width="200" alt="Contestant 2">
+            </a>
+            <p>{{ price2 }}</p>
+            <a href="/2">{{ contestant2 }}</a>
+        </div>
+    </div>
+</div>
+<footer class="footer">
     <p>&copy; 2024 Vote for Product</p>
 </footer>
-
-</div>
+</body>
+</html>
