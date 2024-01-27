@@ -1,28 +1,37 @@
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LLMZH86LY6">
-</script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-LLMZH86LY6');
-</script>
-<link rel="stylesheet" type="text/css" href="static/css/index.css">
-<a href="https://shop.voteforproduct.com/">
-    <p class="topright">Shop</p>
-</a>
-<a href="mailto:support@voteforproduct.com?subject=voteforproduct.com%20support">
-    <p class="topleft">Contact support</p>
-</a>
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Leaderboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/leaderboard.css') }}">
 </head>
 <body>
+
+<h1>Leaderboard</h1>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Wins/Losses</th>
+                <th>Wins</th>
+                <th>Losses</th>
+                <th>Draws</th>
+                <th>Username</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for username in usernames %}
+            <tr>
+                <td>{{ username[1] }}</td>
+                <td>{{ username[2] }}</td>
+                <td>{{ username[3] }}</td>
+                <td>{{ username[4] }}</td>
+                <td>{{ username[0] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 </body>
 </html>
