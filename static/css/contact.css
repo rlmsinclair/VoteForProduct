@@ -1,0 +1,50 @@
+/* Add this CSS to your existing CSS file or create a new CSS file for form styling */
+
+.contact-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.contact-container h1 {
+    margin-bottom: 20px;
+}
+
+.contact-container form {
+    margin-top: 20px;
+}
+
+.contact-container label {
+    display: block;
+    font-weight: bold;
+}
+
+.contact-container input[type="text"],
+.contact-container input[type="email"],
+.contact-container textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.contact-container textarea {
+    height: 150px; /* Adjust the height as needed */
+}
+
+.contact-container button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.contact-container button:hover {
+    background-color: #0056b3;
+}
