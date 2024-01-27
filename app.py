@@ -174,14 +174,14 @@ with open('./ebay_active_items.csv', newline='', encoding='utf8') as csvfile:
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
-        name = request.form['name']
+        name1 = request.form['name1']
         email = request.form['email']
         message = request.form['message']
 
-        msg = Message(subject='New message from your website', 
+        msg = Message(subject='New message from your website',
                       sender='support@voteforproduct.com',  # Replace with your Gmail address
                       recipients=['support@voteforproduct.com'])  # Replace with your Gmail address
-        msg.body = f'Name: {name}\nEmail: {email}\nMessage: {message}'
+        msg.body = f'Name: {name1}\nEmail: {email}\nMessage: {message}'
         mail.send(msg)
 
         flash('Your message has been sent successfully!', 'success')
@@ -193,22 +193,27 @@ def contact():
 def cashout():
     if request.method == 'POST':
         username = request.form['username']
+        print('test')
         email = request.form['email']
         wallet_address = request.form['wallet_address']
+        print('test')
         user = flask_login.current_user
+        print(username)
+        print(email)
+        print(wallet_address)
         msg = Message(subject='New message from your website',
                       sender='support@voteforproduct.com',  # Replace with your Gmail address
                       recipients=['support@voteforproduct.com'])  # Replace with your Gmail address
-        msg.body = f'Given Username: {username}\nGiven Email: {email}\nGiven Monero Wallet Address: {wallet_address}'\
-            + '\n\nDatabase Username:' + user.username + '\n'\
-            + 'Database Email:' + user.email + '\n'\
-            + 'DatabaseMonero Wallet Address' + user.wallet_address + '\n' \
-            + '\nCheck these match!\n' \
-            + '\nIf they do not match, contact Robbie\n'\
-            + '\nUser has £' + user.balance + ' in their account and wishes to cash out.'
+        msg.body = ('Given Username: ' + str(username) + '\n' + 'Given Email: ' + str(email) + '\nGiven Monero Wallet Address: ' + str(wallet_address) +
+            '\n\nDatabase Username:' + str(user.username) + '\n' +
+            'Database Email:' + str(user.email) + '\n' +
+            'Database Monero Wallet Address' + str(user.wallet_address) + '\n' +
+            '\nCheck these match!\n' +
+            '\nIf they do not match, contact Robbie\n' +
+            '\nUser has £' + str(user.balance) + ' in their account and wishes to cash out.')
         mail.send(msg)
 
-        flash('Your withdrawl request has been sent successfully!', 'success')
+        flash('Your withdrawal request has been sent successfully!', 'success')
         return redirect(url_for('cashout'))
 
     return render_template('cashout.html')
