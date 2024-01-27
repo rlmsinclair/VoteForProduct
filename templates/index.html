@@ -1,13 +1,20 @@
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LLMZH86LY6">
-</script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-LLMZH86LY6"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+    
+      gtag('config', 'G-LLMZH86LY6');
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
+</head>
+<body>
 
-  gtag('config', 'G-LLMZH86LY6');
-</script>
 <a href="https://shop.voteforproduct.com/">
     <p class="topright">Shop</p>
 </a>
@@ -15,33 +22,30 @@
 <a href="mailto:support@voteforproduct.com?subject=voteforproduct.com%20support">
     <p class="topleft">Contact support</p>
 </a>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
-<link rel="stylesheet" type="text/css" href="static/css/index.css">
 <br>
 <br>
-<div class="image123">
-    <div class="imgContainer1">
-        <a href = "/1">{{contestant1}}</a>
-        <p>{{price1}}</p>
-        <a href="/1">
-            <img src="{{ image_url1 }}" height="200" width="200"/>
-        </a>
-    </div>
-    <div class="imgContainer2">
-        <a href="/2">{{contestant2}}</a>
-        <p>{{price2}}</p>
-        <a href="/2">
-            <img src="{{ image_url2 }}" height="200" width="200"/>
-        </a>
-    </div>
-    <div class="imgContainer3">
-<!--        This creates a blank character so the images display left and right properly-->
-        <p>
-            &nbsp;
-            &#160;
-        </p>
+
+<div class="card-container">
+    <div class="card">
+        <div class="card-body">
+            <a href="/1">
+                <img src="{{ image_url1 }}" height="200" width="200" alt="Contestant 1">
+            </a>
+            <p>{{ price1 }}</p>
+            <a href="/1">{{ contestant1 }}</a>
+        </div>
+    </div> 
+    <div class="card">
+        <div class="card-body">
+            <a href="/2">
+                <img src="{{ image_url2 }}" height="200" width="200" alt="Contestant 2">
+            </a>
+            <p>{{ price2 }}</p>
+            <a href="/2">{{ contestant2 }}</a>
+        </div>
     </div>
 </div>
+
 <div class="textContainer1">
     <h1>Better value for money? Click to Choose.</h1>
     <h2>Try and guess the item that most people have picked!</h2>
@@ -53,8 +57,9 @@
         Places 1-2 receive 100% of prize. Places 3-5 receive 50% of prize. Places 5-10 receive 20% of prize.
         It may take up to 24 hours to receive your Monero.
     </p>
-    <a href = "/leaderboard">Leaderboard</a>
-    <a href = "/admin">Admin</a>
+    <a href="/leaderboard">Leaderboard</a>
+    <a href="/admin">Admin</a>
 </div>
 
-
+</body>
+</html>
