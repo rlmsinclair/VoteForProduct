@@ -118,7 +118,7 @@ def update_elo(a, b):
 # [[name, price, link, elo], [name2, price2, link2, elo2], etc...]
 elo = 1400 # This is the starting elo for all items
 items = []
-with open('ebay_active_items.csv', newline='') as csvfile:
+with open('./ebay_active_items.csv', newline='', encoding='utf8') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
     for row in reader:
         name_price_link_elo_image = []
@@ -300,7 +300,7 @@ def show_leaderboard():
         for username in usernames:
             output = output + str(username[1]) + ' | ' + str(username[2]) + ' | ' + str(username[3]) + ' | '\
                      + str(username[4]) + ' | ' + username[0] + '<br>'
-        return output
+        return render_template('leaderboard.html', usernames=usernames)
 
 def password_prompt(message):
     return f'''
