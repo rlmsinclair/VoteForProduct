@@ -11,19 +11,24 @@
       gtag('config', 'G-LLMZH86LY6');
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/nav.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
-<body>
-
-<a href="https://shop.voteforproduct.com/">
-    <p class="topright">Shop</p>
-</a>
-<br>
-<a href="mailto:support@voteforproduct.com?subject=voteforproduct.com%20support">
-    <p class="topleft">Contact support</p>
-</a>
-<br>
-<br>
+<body> 
+    <nav class="navbar">
+        <ul class="navbar-nav">
+            <li class="nav-item"><a href="/">Shop</a></li>
+            <li class="nav-item"><a href="/leaderboard">Leaderboard</a></li>
+            <li class="nav-item"><a href="/contact">Contact Us</a></li>
+            <li class="nav-item"><a href="/login">Login</a></li>
+            
+    
+        </ul>
+    
+    
+    </nav>
+    <br>
+    <br>
 
 <div class="card-container">
     <div class="card">
@@ -57,9 +62,10 @@
         Places 1-2 receive 100% of prize. Places 3-5 receive 50% of prize. Places 5-10 receive 20% of prize.
         It may take up to 24 hours to receive your Monero.
     </p>
-    <a href="/leaderboard">Leaderboard</a>
-    <a href="/admin">Admin</a>
+  
 </div>
-
+<footer class="footer">
+    <p>&copy; 2024 Vote for Product</p>
+</footer>
 </body>
 </html>

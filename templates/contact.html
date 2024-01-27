@@ -1,0 +1,47 @@
+
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/contact.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/nav.css') }}">
+<nav class="navbar">
+    <ul class="navbar-nav">
+        <li class="nav-item"><a href="/">Shop</a></li>
+        <li class="nav-item"><a href="/leaderboard">Leaderboard</a></li>
+        <li class="nav-item"><a href="/contact">Contact Us</a></li>
+        <li class="nav-item"><a href="/login">Login</a></li>
+        
+
+    </ul>
+
+
+</nav>
+<br>
+<br>
+
+<div class="contact-container">
+    <h1>Contact Us</h1>
+    <p>You can reach us via email at <a href="mailto:support@voteforproduct.com">support@voteforproduct.com</a>.</p>
+    <p>Alternatively, you can use the form below to send us a message:</p>
+    
+    <form method="post" action="{{ url_for('contact') }}">
+        <label for="name">Your Name:</label><br>
+        <input type="text" id="name" name="name" required><br>
+        <label for="email">Your Email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" required></textarea><br>
+        <button type="submit">Submit</button>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+</div>
+<br>
+<br>
+<footer class="footer">
+    <p>&copy; 2024 Vote For Product</p>
+</footer>
