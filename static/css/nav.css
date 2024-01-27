@@ -2,7 +2,7 @@
 .navbar {
     background-color: #fff; /* Change background color to white */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add shadow at the bottom */
-    width: 95%; /* Make it full-width */
+    width: 100%; /* Make it full-width */
     display: flex;
     justify-content: flex-end;
     padding: 20px;
@@ -33,7 +33,7 @@
 .footer {
     left: 0;
     bottom: 0;
-    width: 95%;
+    width: 100%;
     background-color: #fff; /* Set background color to white */
     color: #333; /* Set text color */
     text-align: center;
