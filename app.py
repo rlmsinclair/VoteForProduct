@@ -72,6 +72,7 @@ class User(UserMixin , db.Model):
     wins = db.Column(db.Integer(), nullable=True)
     losses = db.Column(db.Integer(), nullable=True)
     draws = db.Column(db.Integer(), nullable=True)
+    balance = db.Column(db.Float(), nullable=True)
 
 
 #Registration Form
@@ -188,6 +189,30 @@ def contact():
 
     return render_template('contact.html')
 
+@app.route('/cashout', methods=['GET', 'POST'])
+def cashout():
+    if request.method == 'POST':
+        username = request.form['username']
+        email = request.form['email']
+        wallet_address = request.form['wallet_address']
+        user = flask_login.current_user
+        msg = Message(subject='New message from your website',
+                      sender='support@voteforproduct.com',  # Replace with your Gmail address
+                      recipients=['support@voteforproduct.com'])  # Replace with your Gmail address
+        msg.body = f'Given Username: {username}\nGiven Email: {email}\nGiven Monero Wallet Address: {wallet_address}'\
+            + '\n\nDatabase Username:' + user.username + '\n'\
+            + 'Database Email:' + user.email + '\n'\
+            + 'DatabaseMonero Wallet Address' + user.wallet_address + '\n' \
+            + '\nCheck these match!\n' \
+            + '\nIf they do not match, contact Robbie\n'\
+            + '\nUser has £' + user.balance + ' in their account and wishes to cash out.'
+        mail.send(msg)
+
+        flash('Your withdrawl request has been sent successfully!', 'success')
+        return redirect(url_for('cashout'))
+
+    return render_template('cashout.html')
+
 @app.route('/')
 def show_homepage():
     return render_template('index.html')
@@ -220,7 +245,8 @@ def show_pair_of_items():
                                contestant2=str(session['item2'][0]),
                                image_url2=url_for('static', filename=session['item2'][0] + '.jpg'),
                                price1='£' + price1,
-                               price2='£' + price2
+                               price2='£' + price2,
+                               balance=str(round(user.balance, 2))
                                )
     except Exception as e:
         print(e)
@@ -233,6 +259,7 @@ def show_pair_of_items():
 def item_one_wins():
     item1 = session['item1']
     item2 = session['item2']
+
     win_or_lose = ''
     user = flask_login.current_user
     if session['current_page'] == '1':
@@ -246,15 +273,18 @@ def item_one_wins():
     if item1[3] > item2[3]:
         win_or_lose = 'You Win!'
         user.wins = user.wins + 1
+        user.balance = user.balance + 0.02
         db.session.add(user)
         db.session.commit()
     if item1[3] < item2[3]:
         win_or_lose = 'You Lose :('
         user.losses = user.losses + 1
+        user.balance = user.balance - 0.01
         db.session.add(user)
         db.session.commit()
     if item1[3] == item2[3]:
         win_or_lose = 'You Draw! (Equal value)'
+        user.balance = user.balance + 0.01
         user.draws = user.draws + 1
         db.session.add(user)
         db.session.commit()
@@ -281,31 +311,34 @@ def item_two_wins():
     item1 = session['item1']
     item2 = session['item2']
 
+
     win_or_lose = ''
     user = flask_login.current_user
+    balance = user.balance
 
     if session['current_page'] == '2':
         return redirect(url_for('show_pair_of_items'))
     session['current_page'] = '2'
 
-
     session['item1'] = '0'
     session['item2'] = '0'
-
 
     if item2[3] > item1[3]:
         win_or_lose = 'You Win!'
         user.wins = user.wins + 1
+        user.balance = user.balance + 0.02
         db.session.add(user)
         db.session.commit()
     if item2[3] < item1[3]:
         win_or_lose = 'You Lose :('
         user.losses = user.losses + 1
+        user.balance = user.balance - 0.01
         db.session.add(user)
         db.session.commit()
     if item2[3] == item1[3]:
         win_or_lose = 'You Draw! (Equal value)'
         user.draws = user.draws + 1
+        user.balance = user.balance + 0.01
         db.session.add(user)
         db.session.commit()
 
