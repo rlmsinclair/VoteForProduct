@@ -94,7 +94,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        new_user = User(country=request.form.get('country'), email=form.email.data, wallet_address=form.wallet_address.data, username=form.username.data, password= hashed_password, wins=0, losses=1, draws=0)
+        new_user = User(country=request.form.get('country'), email=form.email.data, wallet_address=form.wallet_address.data, username=form.username.data, password= hashed_password, wins=0, losses=1, draws=0, balance=0)
         db.session.add(new_user)
         db.session.commit()
         flash('Registration Successful !')
