@@ -19,6 +19,7 @@ from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
 from flask_login import UserMixin, LoginManager, login_user
 from flask_bcrypt import Bcrypt
 import psycopg2
+from flask_mail import Mail , Message
 # Flask syntax
 
 app = Flask(__name__)
@@ -32,6 +33,14 @@ login_manager.login_view = 'login'
 bcrypt = Bcrypt(app)
 
 
+app.config['MAIL_SERVER'] = 'smtpout.secureserver.net'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = 'support@voteforproduct.com'  # Replace with your Gmail address
+app.config['MAIL_PASSWORD'] = 'RobbieIsCool'         # Replace with your Gmail password or app password
+
+mail = Mail(app)
 
 # This API key is totally encrypted by separating it onto two lines
 OPENAI_API_KEY = 'jk-vWksWz1HhaqkBL105FIqT' + '3BlbkFJYGn5lNEfCWijvPVvY4Vk'
@@ -47,7 +56,9 @@ PASSPHRASE = "talha"
 @login_manager.user_loader
 def load_user(user_id):
     with app.app_context():
+        
         return User.query.get(int(user_id))
+    
 
 
 
@@ -159,6 +170,23 @@ with open('./ebay_active_items.csv', newline='', encoding='utf8') as csvfile:
             time.sleep(12)
         items.append(name_price_link_elo_image)
 
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        message = request.form['message']
+
+        msg = Message(subject='New message from your website', 
+                      sender='support@voteforproduct.com',  # Replace with your Gmail address
+                      recipients=['support@voteforproduct.com'])  # Replace with your Gmail address
+        msg.body = f'Name: {name}\nEmail: {email}\nMessage: {message}'
+        mail.send(msg)
+
+        flash('Your message has been sent successfully!', 'success')
+        return redirect(url_for('contact'))
+
+    return render_template('contact.html')
 
 @app.route('/')
 def show_pair_of_items():
@@ -191,7 +219,8 @@ def show_pair_of_items():
                                price1='£' + price1,
                                price2='£' + price2
                                )
-    except:
+    except Exception as e:
+        print(e)
         session['item1'] = '0'
         session['item2'] = '0'
         return redirect(url_for('show_pair_of_items'))
