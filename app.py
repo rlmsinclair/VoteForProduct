@@ -189,6 +189,9 @@ def contact():
     return render_template('contact.html')
 
 @app.route('/')
+def show_homepage():
+    return render_template('index.html')
+@app.route('/vote')
 def show_pair_of_items():
     user = flask_login.current_user
     if user.is_anonymous:
@@ -211,7 +214,7 @@ def show_pair_of_items():
             price1 = price1.split('.')[0] + '.' + price1.split('.')[1][0] + price1.split('.')[1][1]
         if len(price2) >= 14:
             price2 = price2.split('.')[0] + '.' + price2.split('.')[1][0] + price2.split('.')[1][1]
-        return render_template('index.html',
+        return render_template('vote.html',
                                contestant1=str(session['item1'][0]),
                                image_url1=url_for('static', filename=session['item1'][0] + '.jpg'),
                                contestant2=str(session['item2'][0]),
