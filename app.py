@@ -199,7 +199,10 @@ def cashout():
         return redirect(url_for('login'))
     currency_rates = cr.get_rates('GBP')
     c = CurrencyCodes()
-    balance_in_user_currency = user.balance * currency_rates[user.currency]
+    if user.currency != 'GBP':
+        balance_in_user_currency = user.balance * currency_rates[user.currency]
+    else:
+        balance_in_user_currency = user.balance
     currency_symbol = c.get_symbol(user.currency)
 
     if request.method == 'POST':
@@ -235,7 +238,10 @@ def show_pair_of_items():
     try:
         currency_rates = cr.get_rates('GBP')
         c = CurrencyCodes()
-        balance_in_user_currency = user.balance * currency_rates[user.currency]
+        if user.currency != 'GBP':
+            balance_in_user_currency = user.balance * currency_rates[user.currency]
+        else:
+            balance_in_user_currency = user.balance
         currency_symbol = c.get_symbol(user.currency)
 
         if session['item1'] != '0' or session['item2'] != '0':
@@ -251,9 +257,12 @@ def show_pair_of_items():
             session['item2'] = items[random_value_2]
         price1 = session['item1'][1]
         price2 = session['item2'][1]
-        print(price1)
-        price3 = float(price1) * currency_rates[user.currency]
-        price4 = float(price2) * currency_rates[user.currency]
+        if user.currency != 'GBP':
+            price3 = float(price1) * currency_rates[user.currency]
+            price4 = float(price2) * currency_rates[user.currency]
+        else:
+            price3 = price1
+            price4 = price2
         if len(price1) >= 14:
             price1 = price1.split('.')[0] + '.' + price1.split('.')[1][0] + price1.split('.')[1][1]
         if len(price2) >= 14:
