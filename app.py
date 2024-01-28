@@ -19,7 +19,7 @@ from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
 from flask_login import UserMixin, LoginManager, login_user
 from flask_bcrypt import Bcrypt
 import psycopg2
-from flask_mail import Mail , Message
+from flask_mail import Mail, Message
 # Flask syntax
 
 app = Flask(__name__)
@@ -33,13 +33,12 @@ login_manager.login_view = 'login'
 bcrypt = Bcrypt(app)
 
 
-app.config['MAIL_SERVER'] = 'smtpout.secureserver.net'
+app.config['MAIL_SERVER'] = 'smtp.office365.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 app.config['MAIL_USERNAME'] = 'support@voteforproduct.com'  # Replace with your Gmail address
 app.config['MAIL_PASSWORD'] = 'RobbieIsCool'         # Replace with your Gmail password or app password
-
 mail = Mail(app)
 
 # This API key is totally encrypted by separating it onto two lines
@@ -177,7 +176,6 @@ def contact():
         name1 = request.form['name1']
         email = request.form['email']
         message = request.form['message']
-
         msg = Message(subject='New message from your website',
                       sender='support@voteforproduct.com',  # Replace with your Gmail address
                       recipients=['support@voteforproduct.com'])  # Replace with your Gmail address
@@ -193,14 +191,9 @@ def contact():
 def cashout():
     if request.method == 'POST':
         username = request.form['username']
-        print('test')
         email = request.form['email']
         wallet_address = request.form['wallet_address']
-        print('test')
         user = flask_login.current_user
-        print(username)
-        print(email)
-        print(wallet_address)
         msg = Message(subject='New message from your website',
                       sender='support@voteforproduct.com',  # Replace with your Gmail address
                       recipients=['support@voteforproduct.com'])  # Replace with your Gmail address
