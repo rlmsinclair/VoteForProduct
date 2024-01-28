@@ -21,7 +21,6 @@ from flask_bcrypt import Bcrypt
 import psycopg2
 from flask_mail import Mail, Message
 from forex_python.converter import CurrencyRates, CurrencyCodes
-from babel import numbers
 import pandas
 
 # Flask syntax
