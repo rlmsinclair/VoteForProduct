@@ -20,6 +20,10 @@ from flask_login import UserMixin, LoginManager, login_user
 from flask_bcrypt import Bcrypt
 import psycopg2
 from flask_mail import Mail, Message
+from forex_python.converter import CurrencyRates, CurrencyCodes
+from babel import numbers
+import pandas
+
 # Flask syntax
 
 app = Flask(__name__)
@@ -31,6 +35,7 @@ login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
 bcrypt = Bcrypt(app)
+cr = CurrencyRates()
 
 
 app.config['MAIL_SERVER'] = 'smtp.office365.com'
@@ -72,7 +77,7 @@ class User(UserMixin , db.Model):
     losses = db.Column(db.Integer(), nullable=True)
     draws = db.Column(db.Integer(), nullable=True)
     balance = db.Column(db.Float(), nullable=True)
-
+    currency = db.Column(db.Integer(), nullable=False)
 
 #Registration Form
 class RegistrationForm(FlaskForm):
@@ -93,7 +98,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        new_user = User(country=request.form.get('country'), email=form.email.data, wallet_address=form.wallet_address.data, username=form.username.data, password= hashed_password, wins=0, losses=1, draws=0, balance=0)
+        new_user = User(country=request.form.get('country'), email=form.email.data, wallet_address=form.wallet_address.data, username=form.username.data, password= hashed_password, wins=0, losses=1, draws=0, balance=0, currency=request.form.get('currency'))
         db.session.add(new_user)
         db.session.commit()
         flash('Registration Successful !')
@@ -187,15 +192,22 @@ def contact():
 
     return render_template('contact.html')
 
+
 @app.route('/cashout', methods=['GET', 'POST'])
 def cashout():
     user = flask_login.current_user
     if user.is_anonymous:
         return redirect(url_for('login'))
+    currency_rates = cr.get_rates('GBP')
+    c = CurrencyCodes()
+    balance_in_user_currency = user.balance * currency_rates[user.currency]
+    currency_symbol = c.get_symbol(user.currency)
+
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
         wallet_address = request.form['wallet_address']
+
         msg = Message(subject='New message from your website',
                       sender='support@voteforproduct.com',  # Replace with your Gmail address
                       recipients=['support@voteforproduct.com'])  # Replace with your Gmail address
@@ -211,7 +223,7 @@ def cashout():
         flash('Your withdrawal request has been sent successfully!', 'success')
         return redirect(url_for('cashout'))
 
-    return render_template('cashout.html', balance=str(round(user.balance, 2)))
+    return render_template('cashout.html', currency_symbol=currency_symbol, balance=str(balance_in_user_currency))
 
 @app.route('/')
 def show_homepage():
@@ -222,6 +234,11 @@ def show_pair_of_items():
     if user.is_anonymous:
         return redirect(url_for('login'))
     try:
+        currency_rates = cr.get_rates('GBP')
+        c = CurrencyCodes()
+        balance_in_user_currency = user.balance * currency_rates[user.currency]
+        currency_symbol = c.get_symbol(user.currency)
+
         if session['item1'] != '0' or session['item2'] != '0':
             fun = 'had'
         else:
@@ -235,6 +252,9 @@ def show_pair_of_items():
             session['item2'] = items[random_value_2]
         price1 = session['item1'][1]
         price2 = session['item2'][1]
+        print(price1)
+        price3 = float(price1) * currency_rates[user.currency]
+        price4 = float(price2) * currency_rates[user.currency]
         if len(price1) >= 14:
             price1 = price1.split('.')[0] + '.' + price1.split('.')[1][0] + price1.split('.')[1][1]
         if len(price2) >= 14:
@@ -244,9 +264,12 @@ def show_pair_of_items():
                                image_url1=url_for('static', filename=session['item1'][0] + '.jpg'),
                                contestant2=str(session['item2'][0]),
                                image_url2=url_for('static', filename=session['item2'][0] + '.jpg'),
-                               price1='£' + price1,
-                               price2='£' + price2,
-                               balance=str(round(user.balance, 2))
+                               currency_symbol=currency_symbol,
+                               price3=str(price3),
+                               price1=str(price1),
+                               price4=str(price4),
+                               price2=str(price2),
+                               balance=str(balance_in_user_currency)
                                )
     except Exception as e:
         print(e)
