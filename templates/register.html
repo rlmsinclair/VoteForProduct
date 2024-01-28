@@ -58,7 +58,8 @@
         {{ form.csrf_token }}
         <label for="country">Country</label><span style="color: red !important; display: inline; float: none;">*</span>
 
-            <select id="country" name="country" class="form-control">
+            <select class="form" id="country" name="country">
+                <option>Select Country</option>
                 <option value="Afghanistan">Afghanistan</option>
                 <option value="Åland Islands">Åland Islands</option>
                 <option value="Albania">Albania</option>
@@ -304,6 +305,39 @@
                 <option value="Zambia">Zambia</option>
                 <option value="Zimbabwe">Zimbabwe</option>
             </select>
+        <br>
+        <label for="currency">Currency</label><span style="color: red !important; display: inline; float: none;">*</span>
+        <select class="form" id="currency" name="currency">
+            <option value="AUD">AUD</option>
+            <option value="BGN">BGN</option>
+            <option value="BRL">BRL</option>
+            <option value="CAD">CAD</option>
+            <option value="CHF">CHF</option>
+            <option value="CNY">CNY</option>
+            <option value="CZK">CZK</option>
+            <option value="DKK">DKK</option>
+            <option value="EUR">EUR</option>
+            <option value="HKD">HKD</option>
+            <option value="HUF">HUF</option>
+            <option value="IDR">IDR</option>
+            <option value="INR">INR</option>
+            <option value="ISK">ISK</option>
+            <option value="JPY">JPY</option>
+            <option value="KRW">KRW</option>
+            <option value="MXN">MXN</option>
+            <option value="MYR">MYR</option>
+            <option value="NOK">NOK</option>
+            <option value="NZD">NZD</option>
+            <option value="PHP">PHP</option>
+            <option value="PLN">PLN</option>
+            <option value="RON">RON</option>
+            <option value="SEK">SEK</option>
+            <option value="SGD">SGD</option>
+            <option value="THB">THB</option>
+            <option value="TRY">TRY</option>
+            <option value="USD">USD</option>
+            <option value="ZAR">ZAR</option>
+        </select>
         <br>
         <label for="email">Email:</label>
         {{ form.email }}
