@@ -189,11 +189,13 @@ def contact():
 
 @app.route('/cashout', methods=['GET', 'POST'])
 def cashout():
+    user = flask_login.current_user
+    if user.is_anonymous:
+        return redirect(url_for('login'))
     if request.method == 'POST':
         username = request.form['username']
         email = request.form['email']
         wallet_address = request.form['wallet_address']
-        user = flask_login.current_user
         msg = Message(subject='New message from your website',
                       sender='support@voteforproduct.com',  # Replace with your Gmail address
                       recipients=['support@voteforproduct.com'])  # Replace with your Gmail address
@@ -209,7 +211,7 @@ def cashout():
         flash('Your withdrawal request has been sent successfully!', 'success')
         return redirect(url_for('cashout'))
 
-    return render_template('cashout.html')
+    return render_template('cashout.html', balance=str(round(user.balance, 2)))
 
 @app.route('/')
 def show_homepage():
