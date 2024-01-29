@@ -105,5 +105,11 @@ position: absolute;
     margin: 0 auto;
     margin-bottom: 10px;
 }
+    .centeredbody{
+    border: 5px solid;
+    margin: auto;
+    width: 90%;
+    padding: 10px;
+}
 
 }
