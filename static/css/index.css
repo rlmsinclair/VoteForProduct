@@ -93,8 +93,17 @@ position: absolute;
     }
 
     .card-body {
-        width:90%;
+        width:95%;
         margin: 0 auto 20px;
     }
+
+    .card img {
+
+    width: 55%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    margin-bottom: 10px;
+}
 
 }
