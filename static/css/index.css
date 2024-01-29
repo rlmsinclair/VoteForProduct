@@ -91,7 +91,18 @@ position: absolute;
     .card-container {
         flex-wrap: wrap;
         flex-direction: column;
-
+    }
+    .card a {
+        margin-bottom: 10px;
+        margin-top: 10px;
+        margin-left: 10px;
+        margin-right: 10px;
+        padding: 5px 5px 5px 5px;
+        text-align: center;
+        height: 200px;
+        min-width: 230px;
+        border-radius: 10px;
+        font-size: 18px;
     }
     .centeredbody{
         border: 5px solid;
@@ -99,5 +110,4 @@ position: absolute;
         width: 80%;
         padding: 10px;
     }
-    
 }
