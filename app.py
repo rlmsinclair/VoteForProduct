@@ -11,17 +11,14 @@ from operator import itemgetter
 from openai import OpenAI
 
 from flask_wtf import FlaskForm
-from sqlalchemy import create_engine
 from wtforms import StringField , PasswordField , SubmitField
 import time
 from flask_sqlalchemy import SQLAlchemy
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
 from flask_login import UserMixin, LoginManager, login_user
 from flask_bcrypt import Bcrypt
-import psycopg2
 from flask_mail import Mail, Message
 from forex_python.converter import CurrencyRates, CurrencyCodes
-import pandas
 
 # Flask syntax
 
