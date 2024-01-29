@@ -133,46 +133,60 @@ def update_elo(a, b):
 # [[name, price, link, elo], [name2, price2, link2, elo2], etc...]
 elo = 1400 # This is the starting elo for all items
 items = []
+
+
 with open('./ebay_active_items.csv', newline='', encoding='utf8') as csvfile:
     reader = csv.reader(csvfile, delimiter=',')
-    for row in reader:
-        name_price_link_elo_image = []
-        name = row[0].split(',')[0]
-        price = row[0].split(',')[1]
-        link = row[0].split(',')[2]
-        name_price_link_elo_image.append(name)
-        name_price_link_elo_image.append(price)
-        name_price_link_elo_image.append(link)
-        name_price_link_elo_image.append(elo)
+    for i, row in enumerate(reader, start=1):
+        try:
+            name_price_link_elo_image = []
+            name = row[0]
+            price = row[1]
+            link = row[2]
+            name_price_link_elo_image.append(name)
+            name_price_link_elo_image.append(price)
+            name_price_link_elo_image.append(link)
+            name_price_link_elo_image.append(elo)
 
-        # Generate AI images for each item
-        prompt1 = name
-        # Ignore the first line of the CSV file
-        if prompt1 == 'name':
-            continue
-        directory = 'static'
-        image_exists = False
-        for filename in os.listdir(directory):
-            if filename.endswith('.jpg'):
-                with open(os.path.join(directory, filename)) as f:
-                    if prompt1 in f.name:
-                        image_exists = True
-        if not image_exists:
-            print(prompt1)
-            response1 = client.images.generate(
-                model="dall-e-3",
-                prompt=prompt1,
-                size="1024x1024",
-                quality="standard",
-                n=1,
-            )
-            image_url1 = response1.data[0].url
-            print(image_url1)
-            img_data = requests.get(image_url1).content
-            with open('static/' + name + '.jpg', 'wb') as handler:
-                handler.write(img_data)
-            time.sleep(12)
-        items.append(name_price_link_elo_image)
+            # Generate AI images for each item
+            prompt1 = name
+            # Ignore the first line of the CSV file
+            if prompt1 == 'name':
+                continue
+            directory = 'static'
+            image_exists = False
+            for filename in os.listdir(directory):
+                if filename.endswith('.jpg'):
+                    with open(os.path.join(directory, filename)) as f:
+                        if prompt1 in f.name:
+                            image_exists = True
+            if not image_exists:
+                print(prompt1)
+                print(i)
+                response1 = client.images.generate(
+                    model="dall-e-2",
+                    prompt=prompt1,
+                    size="256x256",
+                    quality="standard",
+                    n=1,
+                )
+                image_url1 = response1.data[0].url
+                print(image_url1)
+                img_data = requests.get(image_url1).content
+                with open('static/' + name + '.jpg', 'wb') as handler:
+                    handler.write(img_data)
+                time.sleep(12)
+            items.append(name_price_link_elo_image)
+        except Exception as e:
+            print(e)
+
+
+
+# def remove_duplicates(x):
+#     return list(dict.fromkeys(x[0]))
+#
+#
+# items = remove_duplicates(items)
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -263,10 +277,6 @@ def show_pair_of_items():
         else:
             price3 = price1
             price4 = price2
-        if len(price1) >= 14:
-            price1 = price1.split('.')[0] + '.' + price1.split('.')[1][0] + price1.split('.')[1][1]
-        if len(price2) >= 14:
-            price2 = price2.split('.')[0] + '.' + price2.split('.')[1][0] + price2.split('.')[1][1]
         return render_template('vote.html',
                                contestant1=str(session['item1'][0]),
                                image_url1=url_for('static', filename=session['item1'][0] + '.jpg'),
@@ -330,8 +340,6 @@ def item_one_wins():
     for item in items:
         if item == item2:
             item[3] = item2elo
-    for item in sorted(items, key=itemgetter(3)):
-        print(item)
 
     flash(win_or_lose)
     return render_template('1.html')
@@ -380,8 +388,6 @@ def item_two_wins():
     for item in items:
         if item == item2:
             item[3] = item2elo
-    for item in sorted(items, key=itemgetter(3)):
-        print(item)
     flash(win_or_lose)
     return render_template('2.html')
 
