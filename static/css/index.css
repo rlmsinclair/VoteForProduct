@@ -58,7 +58,6 @@ position: absolute;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) ;
     margin: 10px;
-    overflow: hidden;
 
 }
 .card-body {
@@ -79,7 +78,7 @@ position: absolute;
 
 .card img {
     
-    width: 50%;
+    width: 65%;
     height: auto;
     display: block;
     margin: 0 auto;
@@ -89,25 +88,13 @@ position: absolute;
 
 @media screen and (max-width: 768px){
     .card-container {
-        flex-wrap: wrap;
-        flex-direction: column;
+        display:block;
+        margin: 0;
     }
-    .card a {
-        margin-bottom: 10px;
-        margin-top: 10px;
-        margin-left: 10px;
-        margin-right: 10px;
-        padding: 5px 5px 5px 5px;
-        text-align: center;
-        height: 200px;
-        min-width: 230px;
-        border-radius: 10px;
-        font-size: 18px;
+
+    .card-body {
+        width:90%;
+        margin: 0 auto 20px;
     }
-    .centeredbody{
-        border: 5px solid;
-        margin: auto;
-        width: 80%;
-        padding: 10px;
-    }
+
 }
