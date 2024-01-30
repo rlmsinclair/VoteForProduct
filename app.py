@@ -261,6 +261,7 @@ def show_homepage():
         exchange_rate = 1
         currency = 'GBP'
     else:
+        currency = user.currency
         currency_page = 'https://www.xe.com/currencyconverter/convert/?Amount={}&From={}&To={}'.format(1,
                                                                                                        'GBP',
                                                                                                        user.currency)
@@ -275,7 +276,6 @@ def show_homepage():
     win_rate = 0.02 * exchange_rate
     draw_rate = 0.01 * exchange_rate
     loss_rate = 0.01 * exchange_rate
-    currency = user.currency
     return render_template('index.html', currency=currency, win_rate=win_rate, draw_rate=draw_rate, loss_rate=loss_rate)
 @app.route('/vote')
 def show_pair_of_items():
