@@ -11,6 +11,7 @@ from operator import itemgetter
 from openai import OpenAI
 
 from flask_wtf import FlaskForm
+from requests import get
 from wtforms import StringField , PasswordField , SubmitField
 import time
 from flask_sqlalchemy import SQLAlchemy
@@ -19,6 +20,7 @@ from flask_login import UserMixin, LoginManager, login_user
 from flask_bcrypt import Bcrypt
 from flask_mail import Mail, Message
 from forex_python.converter import CurrencyRates, CurrencyCodes
+from bs4 import BeautifulSoup
 
 # Flask syntax
 
@@ -210,11 +212,24 @@ def cashout():
         return redirect(url_for('login'))
     currency_rates = cr.get_rates('GBP')
     c = CurrencyCodes()
-    if user.currency != 'GBP':
-        balance_in_user_currency = user.balance * currency_rates[user.currency]
+    if user.currency not in currency_rates.keys():
+        currency_page = 'https://www.xe.com/currencyconverter/convert/?Amount={}&From={}&To={}'.format(1,
+                                                                                                       'GBP',
+                                                                                                       user.currency)
+        currency = get(currency_page).text
+        currency_data = BeautifulSoup(currency, 'html.parser')
+
+        page = currency_data.find('p', attrs={'class': 'result__BigRate-sc-1bsijpp-1 dPdXSB'})
+
+        stripped_page = page.text.strip()
+        exchange_rate = float(stripped_page.split(' ')[0].replace(',', ''))
+        balance_in_user_currency = user.balance * exchange_rate
+    elif user.currency != 'GBP':
+        exchange_rate = currency_rates[user.currency]
+        balance_in_user_currency = user.balance * exchange_rate
     else:
         balance_in_user_currency = user.balance
-    currency_symbol = c.get_symbol(user.currency)
+        exchange_rate = 1
 
     if request.method == 'POST':
         username = request.form['username']
@@ -236,11 +251,32 @@ def cashout():
         flash('Your withdrawal request has been sent successfully!', 'success')
         return redirect(url_for('cashout'))
 
-    return render_template('cashout.html', currency_symbol=currency_symbol, balance=str(balance_in_user_currency))
+    withdrawal_limit = 3.00 * exchange_rate
+    return render_template('cashout.html', currency_symbol=user.currency, balance=str(balance_in_user_currency), withdrawal_limit=withdrawal_limit)
 
 @app.route('/')
 def show_homepage():
-    return render_template('index.html')
+    user = flask_login.current_user
+    if user.is_anonymous:
+        exchange_rate = 1
+        currency = 'GBP'
+    else:
+        currency_page = 'https://www.xe.com/currencyconverter/convert/?Amount={}&From={}&To={}'.format(1,
+                                                                                                       'GBP',
+                                                                                                       user.currency)
+        currency = get(currency_page).text
+        currency_data = BeautifulSoup(currency, 'html.parser')
+
+        page = currency_data.find('p', attrs={'class': 'result__BigRate-sc-1bsijpp-1 dPdXSB'})
+
+        stripped_page = page.text.strip()
+        exchange_rate = float(stripped_page.split(' ')[0].replace(',', ''))
+        print(exchange_rate)
+    win_rate = 0.02 * exchange_rate
+    draw_rate = 0.01 * exchange_rate
+    loss_rate = 0.01 * exchange_rate
+    currency = user.currency
+    return render_template('index.html', currency=currency, win_rate=win_rate, draw_rate=draw_rate, loss_rate=loss_rate)
 @app.route('/vote')
 def show_pair_of_items():
     user = flask_login.current_user
@@ -248,12 +284,26 @@ def show_pair_of_items():
         return redirect(url_for('login'))
     try:
         currency_rates = cr.get_rates('GBP')
+
         c = CurrencyCodes()
-        if user.currency != 'GBP':
-            balance_in_user_currency = user.balance * currency_rates[user.currency]
+        if user.currency not in currency_rates.keys():
+            currency_page = 'https://www.xe.com/currencyconverter/convert/?Amount={}&From={}&To={}'.format(1,
+                                                                                                           'GBP',
+                                                                                                           user.currency)
+            currency = get(currency_page).text
+            currency_data = BeautifulSoup(currency, 'html.parser')
+
+            page = currency_data.find('p', attrs={'class': 'result__BigRate-sc-1bsijpp-1 dPdXSB'})
+
+            stripped_page = page.text.strip()
+            exchange_rate = float(stripped_page.split(' ')[0].replace(',', ''))
+            balance_in_user_currency = user.balance * exchange_rate
+        elif user.currency != 'GBP':
+            exchange_rate = currency_rates[user.currency]
+            balance_in_user_currency = user.balance * exchange_rate
         else:
             balance_in_user_currency = user.balance
-        currency_symbol = c.get_symbol(user.currency)
+            exchange_rate = 1
 
         if session['item1'] != '0' or session['item2'] != '0':
             fun = 'had'
@@ -269,8 +319,8 @@ def show_pair_of_items():
         price1 = session['item1'][1]
         price2 = session['item2'][1]
         if user.currency != 'GBP':
-            price3 = float(price1) * currency_rates[user.currency]
-            price4 = float(price2) * currency_rates[user.currency]
+            price3 = float(price1) * exchange_rate
+            price4 = float(price2) * exchange_rate
         else:
             price3 = price1
             price4 = price2
@@ -279,7 +329,7 @@ def show_pair_of_items():
                                image_url1=url_for('static', filename=session['item1'][0] + '.jpg'),
                                contestant2=str(session['item2'][0]),
                                image_url2=url_for('static', filename=session['item2'][0] + '.jpg'),
-                               currency_symbol=currency_symbol,
+                               currency_symbol=user.currency,
                                price3=str(price3),
                                price1=str(price1),
                                price4=str(price4),
