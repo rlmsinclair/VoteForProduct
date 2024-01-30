@@ -32,7 +32,7 @@
 <div class="contact-container">
     <h1>Cash out your money</h1>
     <p>
-        Your balance: {{ currency_symbol }}{{ balance }}
+        Your balance: {{ currency_symbol }} {{ balance }}
     </p>
     <p>
         Fill out the form below to get paid in Monero. It can take up to 24 hours to receive your Monero.
@@ -46,7 +46,7 @@
         and sell your Monero for any currency.
     </p>
     <p>
-        Maximum withdrawal limit per day is £3.00
+        Maximum withdrawal limit per day is {{ currency_symbol }} {{ withdrawal_limit }}
     </p>
 
     <form method="post" action="{{ url_for('cashout') }}">
