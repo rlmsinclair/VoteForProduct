@@ -259,9 +259,9 @@ def show_homepage():
     user = flask_login.current_user
     if user.is_anonymous:
         exchange_rate = 1
-        currency = 'GBP'
+        user_currency = 'GBP'
     else:
-        currency = user.currency
+        user_currency = user.currency
         currency_page = 'https://www.xe.com/currencyconverter/convert/?Amount={}&From={}&To={}'.format(1,
                                                                                                        'GBP',
                                                                                                        user.currency)
@@ -276,7 +276,7 @@ def show_homepage():
     win_rate = 0.02 * exchange_rate
     draw_rate = 0.01 * exchange_rate
     loss_rate = 0.01 * exchange_rate
-    return render_template('index.html', currency=currency, win_rate=win_rate, draw_rate=draw_rate, loss_rate=loss_rate)
+    return render_template('index.html', currency=user_currency, win_rate=win_rate, draw_rate=draw_rate, loss_rate=loss_rate)
 @app.route('/vote')
 def show_pair_of_items():
     user = flask_login.current_user
